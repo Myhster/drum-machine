@@ -1,23 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import React, { useState } from 'react';
+import butArr from './butArray.js';
 
 function App() {
+  const [textOut, setTextOut] = useState('love');
+
+  const drumButtons = butArr.map((item, index) => {
+    let audio = React.createRef();
+    const playSound = () => {
+      audio.current.play();
+    };
+
+    document.addEventListener('keydown', (e) => {
+      const id = e.key.toLocaleUpperCase();
+      const audio = document.getElementById(id);
+      if (audio) {
+        audio.play();
+        setTextOut(Object.values(audio)[1]['alt']);
+      }
+    });
+
+    return (
+      <div
+        className='drum-pad'
+        key={index}
+        id={item.id}
+        onClick={() => {
+          setTextOut(item.id);
+          playSound();
+        }}
+      >
+        {item.name}
+        <audio
+          ref={audio}
+          className='clip'
+          id={item.name}
+          src={item.src}
+          alt={item.id}
+        ></audio>
+      </div>
+    );
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <div id='drum-machine'>
+        <h2 className='text-center'>Drum Machine</h2>
+        <div className='container'>
+          <div className='new-row'>
+            <div className='new-row'>
+              {drumButtons}
+              <div id='display'>
+                <h4>output</h4>
+                <p>{textOut}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
